@@ -2,7 +2,7 @@ import React, { useState, type FormEvent } from "react";
 import FileUploader from "~/components/FileUploader";
 import Navbar from "~/components/Navbar";
 
-const upload = () => {
+const Upload = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusText, setStatusText] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -10,6 +10,7 @@ const upload = () => {
   const handleFileSelect = (file: File | null) => {
     setFile(file);
   };
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget.closest("form");
@@ -18,7 +19,8 @@ const upload = () => {
 
     const companyName = formData.get("company-name");
     const jobTitle = formData.get("job-title");
-    const jobDescription = formData.get("job-description");
+    const jobDescription =
+      formData.get("job-decription") || formData.get("job-description");
 
     console.log({ companyName, jobTitle, jobDescription, file });
   };
@@ -72,7 +74,7 @@ const upload = () => {
               </div>
               <div className="form-div">
                 <label htmlFor="uploader">Upload Resume</label>
-                <FileUploader />
+                <FileUploader onFileSelect={handleFileSelect} />
               </div>
 
               <button className="primary-button" type="submit">
@@ -86,4 +88,4 @@ const upload = () => {
   );
 };
 
-export default upload;
+export default Upload;

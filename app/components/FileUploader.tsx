@@ -60,6 +60,10 @@ const FileUploader = ({ onFileSelect }: FileUploderProps) => {
               <button
                 className="p-2 cursor-pointer"
                 onClick={(e) => {
+                  // stop the click from opening the file dialog / submitting a form
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setFile(null);
                   onFileSelect?.(null);
                 }}
               >
