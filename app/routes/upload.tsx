@@ -84,7 +84,7 @@ const Upload = () => {
               </div>
 
               <button className="primary-button" type="submit">
-                Analyze Resume
+                Analyze Resume by using the ai.
               </button>
             </form>
           )}
