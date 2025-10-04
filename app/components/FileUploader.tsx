@@ -1,31 +1,23 @@
-import React, { useCallback, useState } from "react";
+import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
+import { formatSize } from "../lib/utils";
 
-// Utility to format file size in a human-readable string
-function formatFileSize(bytes: number): string {
-  if (bytes === 0) return "0 Bytes";
-  const k = 1024;
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  const size = parseFloat((bytes / Math.pow(k, i)).toFixed(2));
-  return `${size} ${sizes[i]}`;
-}
-
-interface FileUploderProps {
+interface FileUploaderProps {
   onFileSelect?: (file: File | null) => void;
 }
 
-const FileUploader = ({ onFileSelect }: FileUploderProps) => {
-  const [file, setFile] = useState<File | null>(null);
+const FileUploader = ({ onFileSelect }: FileUploaderProps) => {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const selectedFile = acceptedFiles[0] || null;
-      setFile(selectedFile);
-      onFileSelect?.(selectedFile);
+      const file = acceptedFiles[0] || null;
+
+      onFileSelect?.(file);
     },
     [onFileSelect]
   );
-  const maxFileSize = 20 * 1024 * 1024;
+
+  const maxFileSize = 20 * 1024 * 1024; // 20MB in bytes
+
   const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
     useDropzone({
       onDrop,
@@ -34,9 +26,10 @@ const FileUploader = ({ onFileSelect }: FileUploderProps) => {
       maxSize: maxFileSize,
     });
 
+  const file = acceptedFiles[0] || null;
+
   return (
     <div className="w-full gradient-border">
-      {" "}
       <div {...getRootProps()}>
         <input {...getInputProps()} />
 
@@ -49,21 +42,17 @@ const FileUploader = ({ onFileSelect }: FileUploderProps) => {
               <img src="/images/pdf.png" alt="pdf" className="size-10" />
               <div className="flex items-center space-x-3">
                 <div>
-                  <span className="text-small font-medium text-gray-700 truncate max-w-sm">
+                  <p className="text-sm font-medium text-gray-700 truncate max-w-xs">
                     {file.name}
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    {formatFileSize(file.size)}
-                  </span>
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {formatSize(file.size)}
+                  </p>
                 </div>
               </div>
               <button
                 className="p-2 cursor-pointer"
                 onClick={(e) => {
-                  // stop the click from opening the file dialog / submitting a form
-                  e.stopPropagation();
-                  e.preventDefault();
-                  setFile(null);
                   onFileSelect?.(null);
                 }}
               >
@@ -72,7 +61,7 @@ const FileUploader = ({ onFileSelect }: FileUploderProps) => {
             </div>
           ) : (
             <div>
-              <div className="mx-auto w-16 h-16 flex items-centre justify-center mb-2">
+              <div className="mx-auto w-16 h-16 flex items-center justify-center mb-2">
                 <img src="/icons/info.svg" alt="upload" className="size-20" />
               </div>
               <p className="text-lg text-gray-500">
@@ -80,7 +69,7 @@ const FileUploader = ({ onFileSelect }: FileUploderProps) => {
                 and drop
               </p>
               <p className="text-lg text-gray-500">
-                PDF {formatFileSize(maxFileSize)}
+                PDF (max {formatSize(maxFileSize)})
               </p>
             </div>
           )}
@@ -89,5 +78,4 @@ const FileUploader = ({ onFileSelect }: FileUploderProps) => {
     </div>
   );
 };
-
 export default FileUploader;

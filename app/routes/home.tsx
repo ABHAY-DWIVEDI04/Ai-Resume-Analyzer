@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import { usePuterStore } from "~/lib/puter";
 // import { resumes } from "constants";
 // Update the import path below to the correct relative location of your constants file
-import { resumes } from "../../constants";
+import { resumes } from "constant";
 import ResumeCard from "~/components/ResumeCard";
 
 export function meta({}: Route.MetaArgs) {
